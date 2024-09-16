@@ -1,0 +1,4 @@
+requests==2.32.3
+youtube-transcript-api==0.6.2
+google-api-python-client==2.145.0
+python-dotenv==1.0.1
