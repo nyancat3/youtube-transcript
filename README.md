@@ -29,6 +29,13 @@ pip install --upgrade google-auth-oauthlib google-auth-httplib2
 pip install --upgrade google-api-python-client
 ```
 
+## youtube-transcript-api
+
+youtube-transcript-api works locally, but does not work on AWS Lambda as Lambda IPs are blocked by YouTube API.
+
+> you have to use a proxy or some type of vpn service that hide away your ip before fetching the transcript data.
+
+
 ## Run
 
 ```bash
@@ -39,6 +46,15 @@ Run locally
 
 ```bash
 python3 lambda/lambda_function.py
+```
+
+## Lambda Layer
+
+The layer path should be `python`
+https://docs.aws.amazon.com/lambda/latest/dg/packaging-layers.html
+
+```bash
+pip install -r requirements.txt -t ./build/python/
 ```
 
 ## Terraform

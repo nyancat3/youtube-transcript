@@ -81,6 +81,12 @@ data "archive_file" "lambda_zip" {
   output_path = "${path.module}/lambda.zip"
 }
 
+data "archive_file" "lambda_layer_zip" {
+  type        = "zip"
+  source_dir  = "${path.module}/../build"
+  output_path = "${path.module}/lambda_layer.zip"
+}
+
 resource "aws_lambda_function" "lambda_function" {
   function_name    = "youtube-transcript"
   role             = aws_iam_role.lambda_role.arn
@@ -90,6 +96,7 @@ resource "aws_lambda_function" "lambda_function" {
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   depends_on       = [aws_iam_role_policy_attachment.lambda_policy_attachment]
+  layers           = [aws_lambda_layer_version.lambda_layer.arn]
   timeout          = 10
   environment {
     variables = {
@@ -97,4 +104,11 @@ resource "aws_lambda_function" "lambda_function" {
       YOUTUBE_PLAYLIST_ID     = var.youtube_playlist_id
     }
   }
+}
+
+resource "aws_lambda_layer_version" "lambda_layer" {
+  layer_name          = "lambda_layer"
+  filename            = data.archive_file.lambda_layer_zip.output_path
+  source_code_hash    = data.archive_file.lambda_layer_zip.output_base64sha256
+  compatible_runtimes = ["python3.12"]
 }

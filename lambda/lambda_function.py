@@ -3,6 +3,7 @@ from get_transcript import get_transcript
 
 def lambda_handler(event, context):
     video_url = get_latest_video()
+    print(video_url)
     transcript = get_transcript(video_url)
     print(transcript)
 
